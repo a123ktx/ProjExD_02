@@ -65,6 +65,9 @@ def main():
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct) # 爆弾を描画する
+        # 練習6:衝突処理
+        if kk_rct.colliderect(bb_rct):
+            return
 
         pg.display.update()
         clock.tick(1000)
