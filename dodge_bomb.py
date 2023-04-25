@@ -9,6 +9,10 @@ def main():
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     tmr = 0
+    # 練習1:半径10,色：赤の円で爆弾を作成する
+    bb_img = pg.Surface((20, 20))  # ボムのサーフェイスを作成する
+    pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # ボムを描画する
+    bb_img.set_colorkey((0, 0, 0)) #背景を透明にする
 
     while True:
         for event in pg.event.get():
