@@ -2,6 +2,16 @@ import pygame as pg
 import sys
 from random import randint
 
+# 練習5:こうかとんと爆弾が画面にでないようにする
+def check_bound(obj: pg.Rect, area: pg.Rect) -> tuple[bool, bool]:
+    yoko, tate = True, True
+    if obj.left < area.left or area.right < obj.right: # 横方向のはみ出し判定
+        yoko = False
+    if obj.top < area.top or area.bottom < obj.bottom: # 縦方向のはみ出し判定
+        tate = False 
+    return yoko, tate
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((1600, 900))
@@ -40,11 +50,18 @@ def main():
         tmr += 1
         # 爆弾移動処理
         bb_rct.move_ip(vx, vy)
+        if not check_bound(bb_rct, scr_rct)[0]:
+            vx *= -1
+        if not check_bound(bb_rct, scr_rct)[1]:
+            vy *= -1
         # こうかとん移動処理
         key_lst = pg.key.get_pressed()
         for key, tup in key_dct.items():
             if key_lst[key]:
                 kk_rct.move_ip(tup)
+                if check_bound(kk_rct, scr_rct) != (True, True):
+                    kk_rct.centerx -= tup[0]
+                    kk_rct.centery -= tup[1]
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct) # 爆弾を描画する
