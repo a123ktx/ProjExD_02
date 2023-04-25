@@ -1,5 +1,6 @@
 import pygame as pg
 import sys
+from random import randint
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -13,6 +14,10 @@ def main():
     bb_img = pg.Surface((20, 20))  # ボムのサーフェイスを作成する
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # ボムを描画する
     bb_img.set_colorkey((0, 0, 0)) #背景を透明にする
+    # 練習2：爆弾をランダムに配置する
+    bb_rct = bb_img.get_rect()  # 爆弾のrectをとる
+    scr_rct = screen.get_rect()  # 画面のrectをとる
+    bb_rct.center = (randint(0, scr_rct.width), randint(0, scr_rct.height))
 
     while True:
         for event in pg.event.get():
@@ -22,6 +27,7 @@ def main():
         tmr += 1
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, [900, 400])
+        screen.blit(bb_img, bb_rct) # 爆弾を描画する
 
         pg.display.update()
         clock.tick(1000)
