@@ -18,7 +18,6 @@ def main():
     clock = pg.time.Clock()
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
-    kk_img = pg.transform.rotozoom(kk_img, 90, 2.0)
     kk_img2 = pg.transform.flip(kk_img, True, False) #反転させたこうかとん
     tmr = 0
     # 練習1:半径10,色：赤の円で爆弾を作成する
@@ -44,15 +43,15 @@ def main():
     }
     # こうかとんが向いている方向を示す辞書
     angle_dct = {
-        (  0, 0): pg.transform.rotozoom(kk_img, -90, 1.0),
-        (-1,  0): pg.transform.rotozoom(kk_img, -90, 1.0),
-        (-1, +1): pg.transform.rotozoom(kk_img, -45, 1.0),
-        ( 0, +1): pg.transform.rotozoom(kk_img2, 0, 1.0),
-        (+1, +1): pg.transform.rotozoom(kk_img2, 45, 1.0),
-        (+1,  0): pg.transform.rotozoom(kk_img2, 90, 1.0),
-        (+1, -1): pg.transform.rotozoom(kk_img2, 135, 1.0),
-        ( 0, -1): pg.transform.rotozoom(kk_img2, 180, 1.0),
-        (-1, -1): pg.transform.rotozoom(kk_img, -135, 1.0),
+        (  0, 0): pg.transform.rotozoom(kk_img, 0, 2.0),
+        (-1,  0): pg.transform.rotozoom(kk_img, 0, 2.0),
+        (-1, +1): pg.transform.rotozoom(kk_img, 45, 2.0),
+        ( 0, +1): pg.transform.rotozoom(kk_img2, -90, 2.0),
+        (+1, +1): pg.transform.rotozoom(kk_img2, -45, 2.0),
+        (+1,  0): pg.transform.rotozoom(kk_img2, 0, 2.0),
+        (+1, -1): pg.transform.rotozoom(kk_img2, 45, 2.0),
+        ( 0, -1): pg.transform.rotozoom(kk_img2, 90, 2.0),
+        (-1, -1): pg.transform.rotozoom(kk_img, -45, 2.0),
     }
 
     while True:
@@ -83,7 +82,6 @@ def main():
         for t in tup_lst:
             t_x += t[0]
             t_y += t[1]
-        kk_img = pg.image.load("ex02/fig/3.png")
         kk_img = angle_dct[(t_x, t_y)]
         
         
