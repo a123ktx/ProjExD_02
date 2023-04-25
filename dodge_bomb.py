@@ -18,7 +18,7 @@ def main():
     clock = pg.time.Clock()
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
-    kk_img2 = pg.transform.flip(kk_img, True, False) #反転させたこうかとん
+    kk_img2 = pg.transform.flip(kk_img, True, False) # 反転させたこうかとん
     tmr = 0
     # 練習1:半径10,色：赤の円で爆弾を作成する
     bb_img = pg.Surface((20, 20))  # ボムのサーフェイスを作成する
@@ -27,7 +27,8 @@ def main():
     # 練習2：爆弾をランダムに配置する
     bb_rct = bb_img.get_rect()  # 爆弾のrectをとる
     scr_rct = screen.get_rect()  # 画面のrectをとる
-    bb_rct.center = (randint(0, scr_rct.width), randint(0, scr_rct.height))
+    bb_rct.center = (randint(0, scr_rct.width),
+                      randint(0, scr_rct.height))
     # 練習3:爆弾を移動させる
     vx = +1  # 横方向速度
     vy = +1  # 縦方向速度
@@ -43,29 +44,33 @@ def main():
     }
     # こうかとんが向いている方向を示す辞書
     angle_dct = {
-        (  0, 0): pg.transform.rotozoom(kk_img, 0, 2.0),
-        (-1,  0): pg.transform.rotozoom(kk_img, 0, 2.0),
-        (-1, +1): pg.transform.rotozoom(kk_img, 45, 2.0),
+        (  0, 0): pg.transform.rotozoom(kk_img,    0, 2.0),
+        (-1,  0): pg.transform.rotozoom(kk_img,    0, 2.0),
+        (-1, +1): pg.transform.rotozoom(kk_img,   45, 2.0),
         ( 0, +1): pg.transform.rotozoom(kk_img2, -90, 2.0),
         (+1, +1): pg.transform.rotozoom(kk_img2, -45, 2.0),
-        (+1,  0): pg.transform.rotozoom(kk_img2, 0, 2.0),
-        (+1, -1): pg.transform.rotozoom(kk_img2, 45, 2.0),
-        ( 0, -1): pg.transform.rotozoom(kk_img2, 90, 2.0),
-        (-1, -1): pg.transform.rotozoom(kk_img, -45, 2.0),
+        (+1,  0): pg.transform.rotozoom(kk_img2,   0, 2.0),
+        (+1, -1): pg.transform.rotozoom(kk_img2,  45, 2.0),
+        ( 0, -1): pg.transform.rotozoom(kk_img2,  90, 2.0),
+        (-1, -1): pg.transform.rotozoom(kk_img,  -45, 2.0),
     }
+    #演習2:爆弾を加速させる
+    accs = [a for a in range(1, 11)] # 加速を管理するリスト
 
     while True:
-        txt = "0, 0"
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return 0
         tmr += 1
         # 爆弾移動処理
-        bb_rct.move_ip(vx, vy)
+        avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
+        print(accs[min(tmr//1000, 9)])
+        bb_rct.move_ip(avx, avy)
         if not check_bound(bb_rct, scr_rct)[0]:
             vx *= -1
         if not check_bound(bb_rct, scr_rct)[1]:
             vy *= -1
+        
         # こうかとん移動処理
         key_lst = pg.key.get_pressed()
         tup_lst = [] # タプルを保存するリスト
@@ -84,11 +89,10 @@ def main():
             t_y += t[1]
         kk_img = angle_dct[(t_x, t_y)]
         
-        
+        #　描画処理
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct) # 爆弾を描画する
-
         # 練習6:衝突処理
         if kk_rct.colliderect(bb_rct):
             return
