@@ -11,6 +11,7 @@ def check_bound(obj: pg.Rect, area: pg.Rect) -> tuple[bool, bool]:
         tate = False 
     return yoko, tate
 
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((1600, 900))
@@ -18,6 +19,7 @@ def main():
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 90, 2.0)
+    kk_img2 = pg.transform.flip(kk_img, True, False) #反転させたこうかとん
     tmr = 0
     # 練習1:半径10,色：赤の円で爆弾を作成する
     bb_img = pg.Surface((20, 20))  # ボムのサーフェイスを作成する
@@ -42,15 +44,15 @@ def main():
     }
     # こうかとんが向いている方向を示す辞書
     angle_dct = {
-        (  0, 0):   0,
-        (-1,  0):   0,
-        (-1, +1):  45,
-        ( 0, +1):  90,
-        (+1, +1): 135,
-        (+1,  0): 180,
-        (+1, -1): 225,
-        ( 0, -1): 270,
-        (-1, -1): 315,
+        (  0, 0): pg.transform.rotozoom(kk_img, -90, 1.0),
+        (-1,  0): pg.transform.rotozoom(kk_img, -90, 1.0),
+        (-1, +1): pg.transform.rotozoom(kk_img, -45, 1.0),
+        ( 0, +1): pg.transform.rotozoom(kk_img2, 0, 1.0),
+        (+1, +1): pg.transform.rotozoom(kk_img2, 45, 1.0),
+        (+1,  0): pg.transform.rotozoom(kk_img2, 90, 1.0),
+        (+1, -1): pg.transform.rotozoom(kk_img2, 135, 1.0),
+        ( 0, -1): pg.transform.rotozoom(kk_img2, 180, 1.0),
+        (-1, -1): pg.transform.rotozoom(kk_img, -135, 1.0),
     }
 
     while True:
@@ -81,9 +83,8 @@ def main():
         for t in tup_lst:
             t_x += t[0]
             t_y += t[1]
-        t_tup = (t_x, t_y)
         kk_img = pg.image.load("ex02/fig/3.png")
-        kk_img = pg.transform.rotozoom(kk_img, angle_dct[t_tup], 2.0)
+        kk_img = angle_dct[(t_x, t_y)]
         
         
         screen.blit(bg_img, [0, 0])
