@@ -135,9 +135,6 @@ def main():
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct) # 爆弾を描画する
         screen.blit(txt, [0, 0])
-
-            
-
         pg.display.update()
         clock.tick(1000)
 
