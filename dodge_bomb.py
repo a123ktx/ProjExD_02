@@ -1,6 +1,7 @@
 import pygame as pg
 import sys
 from random import randint
+import math
 
 # 練習5:こうかとんと爆弾が画面にでないようにする
 def check_bound(obj: pg.Rect, area: pg.Rect) -> tuple[bool, bool]:
@@ -10,6 +11,21 @@ def check_bound(obj: pg.Rect, area: pg.Rect) -> tuple[bool, bool]:
     if obj.top < area.top or area.bottom < obj.bottom: # 縦方向のはみ出し判定
         tate = False 
     return yoko, tate
+
+
+# 演習4:ボムをこうかとんに近づくように移動する関数
+def chase_bb(bb: pg.Rect, kk: pg.Rect, vx, vy):
+    # bbは爆弾、kkはこうかとんのrect、vx,vyはどちらも爆弾の移動方向
+    chase_x = vx
+    chase_y = vy
+    x_dis = kk.centerx - bb.centerx
+    y_dis = kk.centery - bb.centery
+    xy_nor = (x_dis**2) + (y_dis**2)
+    xy_nor = math.sqrt(xy_nor)
+    if xy_nor > 500:
+        chase_x = (x_dis/xy_nor)*2
+        chase_y = (y_dis/xy_nor)*2
+    return chase_x, chase_y
 
 
 def main():
@@ -71,8 +87,8 @@ def main():
         if G_done:
             tmr += 1
             # 爆弾移動処理
+            vx , vy = chase_bb(bb_rct, kk_rct, vx, vy)
             avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
-            print(accs[min(tmr//1000, 9)])
             bb_rct.move_ip(avx, avy)
             if not check_bound(bb_rct, scr_rct)[0]:
                 vx *= -1
