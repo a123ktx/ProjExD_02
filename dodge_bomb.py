@@ -37,8 +37,11 @@ def main():
     kk_img2 = pg.transform.flip(kk_img, True, False) # 反転させたこうかとん
     kk_img3 = pg.image.load("ex02/fig/6.png")
     kk_img3 = pg.transform.rotozoom(kk_img3, 0, 2.0)
-
     tmr = 0
+    # 追加機能:カウントダウンをつける
+    fonto  = pg.font.Font(None, 80)
+    count = 5
+
     # 練習1:半径10,色：赤の円で爆弾を作成する
     bb_img = pg.Surface((20, 20))  # ボムのサーフェイスを作成する
     pg.draw.circle(bb_img, (255, 0, 0), (10, 10), 10)  # ボムを描画する
@@ -112,6 +115,10 @@ def main():
                 t_x += t[0]
                 t_y += t[1]
             kk_img = angle_dct[(t_x, t_y)]
+            txt = fonto.render(str(count-tmr//1000), True, (255 - tmr//200, 0, 0))
+            if count-tmr//1000 == 0:
+                G_done = False
+
         # 練習6:衝突処理
         if kk_rct.colliderect(bb_rct):
             G_done = False
@@ -127,6 +134,7 @@ def main():
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct) # 爆弾を描画する
+        screen.blit(txt, [0, 0])
 
             
 
