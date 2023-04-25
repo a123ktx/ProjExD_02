@@ -19,6 +19,9 @@ def main():
     bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
     kk_img = pg.image.load("ex02/fig/3.png")
     kk_img2 = pg.transform.flip(kk_img, True, False) # 反転させたこうかとん
+    kk_img3 = pg.image.load("ex02/fig/6.png")
+    kk_img3 = pg.transform.rotozoom(kk_img3, 0, 2.0)
+
     tmr = 0
     # 練習1:半径10,色：赤の円で爆弾を作成する
     bb_img = pg.Surface((20, 20))  # ボムのサーフェイスを作成する
@@ -57,45 +60,59 @@ def main():
     #演習2:爆弾を加速させる
     accs = [a for a in range(1, 11)] # 加速を管理するリスト
 
+    # 演習3:ゲームオーバーでこうかとんの画像を切り替える
+    G_done = True # ゲームが続いているフラグ
+    over_tmr = 0  # ゲームが終了した後のタイマー
+
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return 0
-        tmr += 1
-        # 爆弾移動処理
-        avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
-        print(accs[min(tmr//1000, 9)])
-        bb_rct.move_ip(avx, avy)
-        if not check_bound(bb_rct, scr_rct)[0]:
-            vx *= -1
-        if not check_bound(bb_rct, scr_rct)[1]:
-            vy *= -1
+        if G_done:
+            tmr += 1
+            # 爆弾移動処理
+            avx, avy = vx*accs[min(tmr//1000, 9)], vy*accs[min(tmr//1000, 9)]
+            print(accs[min(tmr//1000, 9)])
+            bb_rct.move_ip(avx, avy)
+            if not check_bound(bb_rct, scr_rct)[0]:
+                vx *= -1
+            if not check_bound(bb_rct, scr_rct)[1]:
+                vy *= -1
+            
+            # こうかとん移動処理
+            key_lst = pg.key.get_pressed()
+            tup_lst = [] # タプルを保存するリスト
+            for key, tup in key_dct.items():
+                if key_lst[key]:
+                    kk_rct.move_ip(tup)
+                    tup_lst.append(tup)
+                    if check_bound(kk_rct, scr_rct) != (True, True):
+                        kk_rct.centerx -= tup[0]
+                        kk_rct.centery -= tup[1]
+            # 移動している方向を確認する
+            t_x = 0
+            t_y = 0
+            for t in tup_lst:
+                t_x += t[0]
+                t_y += t[1]
+            kk_img = angle_dct[(t_x, t_y)]
+        # 練習6:衝突処理
+        if kk_rct.colliderect(bb_rct):
+            G_done = False
         
-        # こうかとん移動処理
-        key_lst = pg.key.get_pressed()
-        tup_lst = [] # タプルを保存するリスト
-        for key, tup in key_dct.items():
-            if key_lst[key]:
-                kk_rct.move_ip(tup)
-                tup_lst.append(tup)
-                if check_bound(kk_rct, scr_rct) != (True, True):
-                    kk_rct.centerx -= tup[0]
-                    kk_rct.centery -= tup[1]
-        # 移動している方向を確認する
-        t_x = 0
-        t_y = 0
-        for t in tup_lst:
-            t_x += t[0]
-            t_y += t[1]
-        kk_img = angle_dct[(t_x, t_y)]
-        
+        if not G_done:
+            kk_img = kk_img3  # 画像を切り替える
+            over_tmr += 1  # 終了後の時間を進める
+
+        if over_tmr > 1000:
+            return  # 1秒経過で終わる
+
         #　描画処理
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct) # 爆弾を描画する
-        # 練習6:衝突処理
-        if kk_rct.colliderect(bb_rct):
-            return
+
+            
 
         pg.display.update()
         clock.tick(1000)
