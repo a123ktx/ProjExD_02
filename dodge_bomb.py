@@ -18,15 +18,35 @@ def main():
     bb_rct = bb_img.get_rect()  # 爆弾のrectをとる
     scr_rct = screen.get_rect()  # 画面のrectをとる
     bb_rct.center = (randint(0, scr_rct.width), randint(0, scr_rct.height))
+    # 練習3:爆弾を移動させる
+    vx = +1  # 横方向速度
+    vy = +1  # 縦方向速度
+     # 練習4:こうかとんを矢印キーで移動できるようにする
+    kk_rct = kk_img.get_rect()  # こうかとんのrectをとる
+    kk_rct.center = 900, 400    # こうかとんの初期位置を入れる
+    # キー入力の辞書を作成する
+    key_dct = {
+        pg.K_UP:    (0, -1),
+        pg.K_DOWN:  (0, +1),
+        pg.K_LEFT:  (-1, 0),
+        pg.K_RIGHT: (+1, 0),
+    }
 
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return 0
-
+        
         tmr += 1
+        # 爆弾移動処理
+        bb_rct.move_ip(vx, vy)
+        # こうかとん移動処理
+        key_lst = pg.key.get_pressed()
+        for key, tup in key_dct.items():
+            if key_lst[key]:
+                kk_rct.move_ip(tup)
         screen.blit(bg_img, [0, 0])
-        screen.blit(kk_img, [900, 400])
+        screen.blit(kk_img, kk_rct)
         screen.blit(bb_img, bb_rct) # 爆弾を描画する
 
         pg.display.update()
